@@ -2,12 +2,13 @@
  * electron-builder 配置。
  *
  * 产物命名统一为：
- *   avero-<version>-<系统>-<架构><后缀>.<ext>
- *   例：avero-1.0.0-windows-x64-setup.exe
- *       avero-1.0.0-macos-arm64.dmg
- *       avero-1.0.0-linux-amd64.deb
- *       avero-1.0.0-alpha-1-linux-x86_64.AppImage
+ *   avero-<系统>-<架构><后缀>.<ext>
+ *   例：avero-windows-x64-setup.exe
+ *       avero-macos-arm64.dmg
+ *       avero-linux-amd64.deb
+ *       avero-linux-x86_64.AppImage
  *
+ * 文件名不含版本号，版本由 Release 标签区分。
  * 架构按各发行版习惯命名（deb 用 amd64、rpm/AppImage 用 x86_64、rpm/pacman 的 arm64 用 aarch64），
  * 由 electron-builder 的 ${arch} 宏自动映射。
  */
@@ -36,7 +37,7 @@ module.exports = {
   // ---------- Windows ----------
   win: {
     target: [{ target: 'nsis', arch: ['x64', 'arm64'] }],
-    artifactName: '${productName}-${version}-windows-${arch}-setup.${ext}',
+    artifactName: '${productName}-windows-${arch}-setup.${ext}',
   },
   nsis: {
     oneClick: false,
@@ -50,7 +51,7 @@ module.exports = {
   mac: {
     target: [{ target: 'dmg', arch: ['arm64', 'x64'] }],
     category: 'public.app-category.productivity',
-    artifactName: '${productName}-${version}-macos-${arch}.${ext}',
+    artifactName: '${productName}-macos-${arch}.${ext}',
     bundleShortVersion: numericVersion,
     bundleVersion: numericVersion,
     // 说明：正式签名/公证需在 macOS 主机上配置证书。
@@ -74,7 +75,7 @@ module.exports = {
     synopsis: pkg.description,
     description: pkg.description,
     syncDesktopName: true,
-    artifactName: '${productName}-${version}-linux-${arch}.${ext}',
+    artifactName: '${productName}-linux-${arch}.${ext}',
   },
 
   // 三个 fpm 目标的包名默认取 npm 包名（@avero/desktop），这里统一覆盖。
@@ -83,6 +84,6 @@ module.exports = {
   pacman: {
     packageName: 'avero',
     // electron-builder 默认扩展名是 .pacman，改为 Arch 约定的 .pkg.tar.xz
-    artifactName: '${productName}-${version}-linux-${arch}.pkg.tar.xz',
+    artifactName: '${productName}-linux-${arch}.pkg.tar.xz',
   },
 };

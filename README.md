@@ -176,30 +176,32 @@ export const plugin: PluginDefinition = {
 
 ## 打包产物
 
-命名规则：`avero-<version>-<系统>-<架构><后缀>.<ext>`
+命名规则：`avero-<系统>-<架构><后缀>.<ext>`
+
+> 文件名不含版本号，版本由 Release 标签区分；同一发布页内产物名称固定，便于脚本直接下载。
 
 **Windows**
 
 | 架构 | 文件 |
 |---|---|
-| x64 | `avero-0.0.1-windows-x64-setup.exe` |
-| arm64 | `avero-0.0.1-windows-arm64-setup.exe` |
+| x64 | `avero-windows-x64-setup.exe` |
+| arm64 | `avero-windows-arm64-setup.exe` |
 
 **macOS**
 
 | 架构 | 文件 |
 |---|---|
-| Apple Silicon | `avero-0.0.1-macos-arm64.dmg` |
-| Intel | `avero-0.0.1-macos-x64.dmg` |
+| Apple Silicon | `avero-macos-arm64.dmg` |
+| Intel | `avero-macos-x64.dmg` |
 
 **Linux**（覆盖主流发行版家族）
 
 | 格式 | 适用发行版 | x64 | arm64 |
 |---|---|---|---|
-| AppImage | 任意发行版（免安装） | `...-linux-x86_64.AppImage` | `...-linux-arm64.AppImage` |
-| deb | Debian / Ubuntu / Mint / Deepin | `...-linux-amd64.deb` | `...-linux-arm64.deb` |
-| rpm | Fedora / RHEL / CentOS / openSUSE | `...-linux-x86_64.rpm` | `...-linux-aarch64.rpm` |
-| pacman | Arch / Manjaro | `...-linux-x64.pkg.tar.xz` | `...-linux-aarch64.pkg.tar.xz` |
+| AppImage | 任意发行版（免安装） | `avero-linux-x86_64.AppImage` | `avero-linux-arm64.AppImage` |
+| deb | Debian / Ubuntu / Mint / Deepin | `avero-linux-amd64.deb` | `avero-linux-arm64.deb` |
+| rpm | Fedora / RHEL / CentOS / openSUSE | `avero-linux-x86_64.rpm` | `avero-linux-aarch64.rpm` |
+| pacman | Arch / Manjaro | `avero-linux-x64.pkg.tar.xz` | `avero-linux-aarch64.pkg.tar.xz` |
 
 > 架构后缀按各生态惯例：deb 用 `amd64`、rpm/AppImage 用 `x86_64`、rpm/pacman 的 arm64 用 `aarch64`，由 electron-builder 自动映射。
 >
