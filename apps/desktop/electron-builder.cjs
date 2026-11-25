@@ -41,6 +41,9 @@ module.exports = {
   nsis: {
     oneClick: false,
     allowToChangeInstallationDirectory: true,
+    // 默认会额外生成一个 x64+arm64 合一的安装包（体积翻倍）。
+    // 这里只保留按架构区分的安装包，便于用户按 CPU 选择。
+    buildUniversalInstaller: false,
   },
 
   // ---------- macOS ----------
