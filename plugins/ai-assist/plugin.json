@@ -1,7 +1,7 @@
 {
   "id": "avero.ai-assist",
   "name": "AI 助手",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha-1",
   "description": "可插拔 LLM 提供商的通用助手：写作、研究、问答，流式输出。",
   "nameKey": "ai.name",
   "descriptionKey": "ai.description",

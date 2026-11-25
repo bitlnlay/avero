@@ -1,6 +1,6 @@
 {
   "name": "avero",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha-1",
   "private": true,
   "description": "avero — 综合型 AI 工作空间：内容创作、知识管理、研究、自动化与商业化，可扩展、跨平台。",
   "license": "MIT",

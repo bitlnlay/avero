@@ -1,6 +1,6 @@
 {
   "name": "@avero/shared",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha-1",
   "private": true,
   "description": "avero 共享契约层：插件 API、IPC 协议与设置类型。",
   "license": "MIT",

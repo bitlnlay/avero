@@ -1,6 +1,6 @@
 {
   "name": "@avero/desktop",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha-1",
   "private": true,
   "description": "avero 桌面应用外壳（Electron）。",
   "author": "avero contributors",
@@ -22,9 +22,9 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.14.0",
-    "@avero/plugin-ai-assist": "0.0.1",
-    "@avero/plugin-notes": "0.0.1",
-    "@avero/shared": "0.0.1",
+    "@avero/plugin-ai-assist": "0.0.1-alpha-1",
+    "@avero/plugin-notes": "0.0.1-alpha-1",
+    "@avero/shared": "0.0.1-alpha-1",
     "react": "^19.2.9",
     "react-dom": "^19.2.9"
   },

@@ -1,7 +1,7 @@
 {
   "id": "avero.notes",
   "name": "笔记",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha-1",
   "description": "Markdown 笔记与知识管理：创建、编辑、搜索本地笔记。",
   "nameKey": "notes.name",
   "descriptionKey": "notes.description",
