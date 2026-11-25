@@ -35,5 +35,12 @@ linux:
     - deb
   category: Utility
   maintainer: avero contributors
+  # 让 .desktop 文件名与 Electron 的 app_id / WM_CLASS 一致（配合 package.json 的 desktopName）
+  syncDesktopName: true
+
+deb:
+  # 默认会用 npm 包名（@avero/desktop）生成包名与文件名，这里覆盖为 avero
+  packageName: avero
+  artifactName: avero-${version}-${arch}.${ext}
 
 npmRebuild: false

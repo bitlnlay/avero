@@ -5,6 +5,12 @@
   "description": "avero 桌面应用外壳（Electron）。",
   "author": "avero contributors",
   "license": "MIT",
+  "homepage": "https://github.com/bitlnlay/avero",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitlnlay/avero.git"
+  },
+  "desktopName": "avero.desktop",
   "main": "./out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
