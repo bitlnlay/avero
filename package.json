@@ -15,7 +15,13 @@
     "typecheck": "tsc --noEmit",
     "pack": "npm run pack -w apps/desktop",
     "dist": "npm run dist -w apps/desktop",
-    "smoke": "npm run smoke -w apps/desktop"
+    "smoke": "npm run smoke -w apps/desktop",
+    "version:show": "node scripts/version.mjs show",
+    "version:set": "node scripts/version.mjs set",
+    "release:alpha": "node scripts/version.mjs next alpha",
+    "release:beta": "node scripts/version.mjs next beta",
+    "release:rc": "node scripts/version.mjs next rc",
+    "release:stable": "node scripts/version.mjs next stable"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

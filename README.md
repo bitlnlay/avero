@@ -167,16 +167,76 @@ export const plugin: PluginDefinition = {
 - ✅ 笔记插件（Markdown 知识管理，本地 JSON 存储）
 - ✅ AI 助手插件（流式对话，可插拔提供商）
 - ✅ 三平台打包配置（Windows/macOS/Linux）
+- ✅ 多架构（x64 / arm64）与 Linux 各发行版包格式（deb / rpm / pacman / AppImage）
+- ✅ 版本规范与发布流程（alpha / beta / rc / stable）
 - ⬜ 第三方插件运行时加载（`userData/plugins`）
 - ⬜ 研究 / 自动化 / 商业化等领域插件
 - ⬜ 存储升级 SQLite（接口已隔离，可平滑替换）
 - ⬜ 笔记 Markdown 预览、全文检索、AI 能力接入笔记
 
-## 跨平台打包备注
+## 打包产物
 
-- **Windows**：`npm run dist` 产出 NSIS 安装包（`release/avero-<version>-setup.exe`）。
-- **macOS**：产出 `.dmg`；正式签名/公证需在 macOS 主机上完成。
-- **Linux**：产出 `AppImage` 与 `deb`。
+命名规则：`avero-<version>-<系统>-<架构><后缀>.<ext>`
+
+**Windows**
+
+| 架构 | 文件 |
+|---|---|
+| x64 | `avero-0.0.1-windows-x64-setup.exe` |
+| arm64 | `avero-0.0.1-windows-arm64-setup.exe` |
+
+**macOS**
+
+| 架构 | 文件 |
+|---|---|
+| Apple Silicon | `avero-0.0.1-macos-arm64.dmg` |
+| Intel | `avero-0.0.1-macos-x64.dmg` |
+
+**Linux**（覆盖主流发行版家族）
+
+| 格式 | 适用发行版 | x64 | arm64 |
+|---|---|---|---|
+| AppImage | 任意发行版（免安装） | `...-linux-x86_64.AppImage` | `...-linux-arm64.AppImage` |
+| deb | Debian / Ubuntu / Mint / Deepin | `...-linux-amd64.deb` | `...-linux-arm64.deb` |
+| rpm | Fedora / RHEL / CentOS / openSUSE | `...-linux-x86_64.rpm` | `...-linux-aarch64.rpm` |
+| pacman | Arch / Manjaro | `...-linux-x64.pkg.tar.xz` | `...-linux-aarch64.pkg.tar.xz` |
+
+> 架构后缀按各生态惯例：deb 用 `amd64`、rpm/AppImage 用 `x86_64`、rpm/pacman 的 arm64 用 `aarch64`，由 electron-builder 自动映射。
+>
+> 本地打包需要 `rpm`（提供 `rpmbuild`）与 `libarchive-tools`（提供 `bsdtar`）：`sudo apt-get install -y rpm libarchive-tools`。CI 已自动安装。
+> 未包含 snap / flatpak（需要额外工具链，AppImage 已覆盖同类场景）。
+
+打包配置见 `apps/desktop/electron-builder.cjs`（用 JS 配置是因为 macOS 的 `CFBundleShortVersionString` 必须为纯数值，需要按版本动态计算）。
+
+## 版本与发布
+
+版本规范：
+
+| 类型 | 格式 | 示例 |
+|---|---|---|
+| 预览版 | `x.y.z-alpha-n` | `1.0.0-alpha-1` |
+| 预览版 | `x.y.z-beta-n` | `1.0.0-beta-1` |
+| 预览版 | `x.y.z-rc-n` | `1.0.0-rc-1` |
+| 正式版 | `x.y.z` | `1.0.0` |
+
+发布流程：
+
+```bash
+npm run release:alpha    # 推进版本（alpha → beta → rc → stable 自动衔接）
+npm run version:show     # 查看当前版本
+npm run version:set 1.2.0-rc-1   # 直接指定版本
+
+git add -A && git commit -m "release: v1.0.0-alpha-1"
+git tag v1.0.0-alpha-1 && git push origin main --tags
+```
+
+推送 `v*` 标签后，GitHub Actions 会：
+
+1. 校验 tag 与 `package.json` 版本一致、符合规范；
+2. 三个平台并行构建全部架构的安装包；
+3. 发布 Release —— **预发布版本自动标记为 pre-release，且不会占用 Latest**。
+
+版本推进规则：`alpha-1 → alpha-2 → beta-1 → rc-1 → 1.0.0 → 1.0.1 → …`；同一基版本内通道只向前切（alpha→beta→rc→stable），回退通道或从正式版开始时补丁号 +1 并重新从 `-1` 起算。
 
 ## License
 

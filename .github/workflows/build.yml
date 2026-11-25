@@ -1,11 +1,11 @@
 name: Build
 
 # 触发方式：
-#   - 推送 v* 标签（如 v0.1.0）→ 构建并在末尾发布 GitHub Release
-#   - 手动 workflow_dispatch → 仅构建并把安装包作为 Action artifacts 上传
-# 如需「每次推送到 main 都跑」，在 on 下加：
-#   push:
-#     branches: [main]
+#   - 推送 v* 标签（如 v0.0.2-beta-1）→ 构建并发布 GitHub Release
+#   - 手动 workflow_dispatch → 仅构建，产物作为 Action artifacts 上传
+#
+# 版本规范：正式版 vX.Y.Z；预览版 vX.Y.Z-alpha-N / -beta-N / -rc-N
+# 预览版会自动标记为 pre-release，且不会覆盖 Latest。
 on:
   push:
     tags:
@@ -17,24 +17,28 @@ permissions:
 
 jobs:
   build:
-    name: ${{ matrix.os }}
+    # 每个平台的任务同时产出该平台的全部架构（架构列表见 apps/desktop/electron-builder.cjs）
+    name: ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
-        # macos-latest 为 Apple Silicon（arm64）；如需 Intel(x64) 的 mac 安装包，
-        # 可额外加一行 macos-13 到矩阵中（注意其已进入弃用周期）。
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+          - os: macos-latest
+            platform: mac
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
+    timeout-minutes: 60
 
     env:
-      # 显式使用官方源，避免本地 .npmrc 的镜像配置（如 npmmirror）影响海外 CI runner 的速度与稳定性。
+      # 显式使用官方源，避免本地 .npmrc 的镜像配置影响海外 CI runner。
       npm_config_registry: https://registry.npmjs.org/
       ELECTRON_MIRROR: https://github.com/electron/electron/releases/download/
       ELECTRON_BUILDER_BINARIES_MIRROR: https://github.com/electron-userland/electron-builder-binaries/releases/download/
-      # 未提供签名证书时跳过签名，避免 mac 构建因找不到身份而失败。
-      # 接入 macOS 签名/公证：删除此变量，并在仓库 secrets 配置
-      # CSC_LINK / CSC_KEY_PASSWORD（以及公证用的 APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID）。
+      # 未提供签名证书时跳过签名。接入 macOS 签名/公证：删除此变量并在 secrets 配置
+      # CSC_LINK / CSC_KEY_PASSWORD / APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID。
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
     steps:
@@ -51,23 +55,38 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # tag 与 package.json 版本必须一致，且符合 x.y.z[-channel-n] 规范
+      - name: Verify version matches tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: node scripts/check-version.mjs "${GITHUB_REF_NAME}"
+
+      # rpm 需要 rpmbuild；pacman 需要 bsdtar
+      - name: Install Linux packaging tools
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends rpm libarchive-tools
+
       - name: Build (electron-vite)
         run: npm run build -w apps/desktop
 
       - name: Package installers (electron-builder)
         working-directory: apps/desktop
-        run: npx electron-builder --publish never
+        run: npx electron-builder --${{ matrix.platform }} --publish never
 
       - name: Upload installers
         uses: actions/upload-artifact@v7
         with:
-          name: avero-${{ matrix.os }}
+          name: avero-${{ matrix.platform }}
           if-no-files-found: error
           path: |
             apps/desktop/release/*.exe
             apps/desktop/release/*.dmg
             apps/desktop/release/*.AppImage
             apps/desktop/release/*.deb
+            apps/desktop/release/*.rpm
+            apps/desktop/release/*.pkg.tar.xz
 
   release:
     name: GitHub Release
@@ -82,7 +101,24 @@ jobs:
           path: artifacts
           merge-multiple: true
 
+      # vX.Y.Z-alpha-N / -beta-N / -rc-N 视为预览版：标记 pre-release，且不占用 Latest
+      - name: Detect release channel
+        id: channel
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_NAME}" =~ -(alpha|beta|rc)-[0-9]+$ ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "make_latest=false" >> "$GITHUB_OUTPUT"
+            echo "标记为预览版"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "make_latest=true" >> "$GITHUB_OUTPUT"
+            echo "标记为正式版"
+          fi
+
       - uses: softprops/action-gh-release@v3
         with:
           files: artifacts/*
           generate_release_notes: true
+          prerelease: ${{ steps.channel.outputs.prerelease }}
+          make_latest: ${{ steps.channel.outputs.make_latest }}
