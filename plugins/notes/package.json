@@ -1,0 +1,13 @@
+{
+  "name": "@avero/plugin-notes",
+  "version": "0.0.1",
+  "private": true,
+  "description": "avero 内置插件：Markdown 笔记 / 知识管理。",
+  "license": "MIT",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
+  "peerDependencies": {
+    "@avero/shared": "*",
+    "react": ">=18"
+  }
+}

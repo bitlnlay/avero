@@ -1,0 +1,26 @@
+{
+  "name": "avero",
+  "version": "0.0.1",
+  "private": true,
+  "description": "avero — 综合型 AI 工作空间：内容创作、知识管理、研究、自动化与商业化，可扩展、跨平台。",
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "plugins/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w apps/desktop",
+    "build": "npm run build -w apps/desktop",
+    "typecheck": "tsc --noEmit",
+    "pack": "npm run pack -w apps/desktop",
+    "dist": "npm run dist -w apps/desktop",
+    "smoke": "npm run smoke -w apps/desktop"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.3"
+  }
+}

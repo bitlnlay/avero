@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@avero/shared": ["packages/shared/src/index.ts"],
+      "@avero/shared/*": ["packages/shared/src/*"],
+      "@avero/plugin-notes": ["plugins/notes/src/index.tsx"],
+      "@avero/plugin-notes/*": ["plugins/notes/src/*"],
+      "@avero/plugin-ai-assist": ["plugins/ai-assist/src/index.tsx"],
+      "@avero/plugin-ai-assist/*": ["plugins/ai-assist/src/*"]
+    }
+  },
+  "include": [
+    "apps/desktop/src/**/*",
+    "apps/desktop/electron.vite.config.ts",
+    "packages/shared/src/**/*",
+    "plugins/notes/src/**/*",
+    "plugins/ai-assist/src/**/*"
+  ]
+}

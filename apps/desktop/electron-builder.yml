@@ -1,0 +1,39 @@
+appId: com.avero.app
+productName: avero
+executableName: avero
+copyright: Copyright © 2026 avero contributors
+
+directories:
+  output: release
+
+# 应用代码已由 electron-vite 打包进 out/，无需携带 node_modules（含原生依赖）。
+# 构建产物中只保留 out/ 与 package.json（electron 读取名称/版本）。
+files:
+  - out/**/*
+  - '!**/node_modules/**'
+
+asar: true
+
+win:
+  target:
+    - nsis
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  artifactName: avero-${version}-setup.${ext}
+
+mac:
+  target:
+    - dmg
+  category: public.app-category.productivity
+  # 说明：macOS 正式签名/公证需在 macOS 主机上完成。
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+  maintainer: avero contributors
+
+npmRebuild: false

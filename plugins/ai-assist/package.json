@@ -1,0 +1,13 @@
+{
+  "name": "@avero/plugin-ai-assist",
+  "version": "0.0.1",
+  "private": true,
+  "description": "avero 内置插件：AI 助手（写作 / 研究 / 问答），可插拔模型提供商。",
+  "license": "MIT",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
+  "peerDependencies": {
+    "@avero/shared": "*",
+    "react": ">=18"
+  }
+}
